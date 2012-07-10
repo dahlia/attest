@@ -316,3 +316,10 @@ class AssertImportHook(object):
                 code = f.read()
 
         return code, filename, newpath
+
+    def is_package(self, name):
+        try:
+            (fd, fn, info), path = self._cache[name]
+        except KeyError:
+            return False
+        return info[2] == imp.PKG_DIRECTORY
