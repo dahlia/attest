@@ -321,5 +321,5 @@ class AssertImportHook(object):
         try:
             (fd, fn, info), path = self._cache[name]
         except KeyError:
-            return False
+            return ImportError(name)
         return info[2] == imp.PKG_DIRECTORY
