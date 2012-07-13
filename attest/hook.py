@@ -307,17 +307,12 @@ class AssertImportHook(object):
         except KeyError:
             raise ImportError(name)
 
-        code = None
         if info[2] == imp.PY_SOURCE:
             with fd:
-                code = fd.read()
-        elif info[2] == imp.PY_COMPILED:
-            code = None
+                return fd.read()
         elif info[2] == imp.PKG_DIRECTORY:
             with open(self.get_filename(name), 'U') as f:
-                code = f.read()
-
-        return code
+                return f.read()
 
     def is_package(self, name):
         try:
@@ -332,15 +327,12 @@ class AssertImportHook(object):
         except KeyError:
             return ImportError(name)
 
-        filename = None
         if info[2] == imp.PY_SOURCE:
-            filename = fn
+            return fn
         elif info[2] == imp.PY_COMPILED:
-            filename = fn[:-1]
+            return fn[:-1]
         elif info[2] == imp.PKG_DIRECTORY:
-            filename = os.path.join(fn, '__init__.py')
-
-        return filename
+            return os.path.join(fn, '__init__.py')
 
     def get_code(self, name):
         source = self.get_source(name)
