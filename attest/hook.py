@@ -330,9 +330,12 @@ class AssertImportHook(object):
         except KeyError:
             return ImportError(name)
 
+        filename = None
         if info[2] == imp.PY_SOURCE:
-            return fn
+            filename = fn
         elif info[2] == imp.PY_COMPILED:
-            return fn[:-1]
+            filename = fn[:-1]
         elif info[2] == imp.PKG_DIRECTORY:
-            return os.path.join(fn, '__init__.py')
+            filename = os.path.join(fn, '__init__.py')
+
+        return filename
