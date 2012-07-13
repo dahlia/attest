@@ -277,8 +277,14 @@ class AssertImportHook(object):
         if name in sys.modules:
             return sys.modules[name]
 
-        source, filename, newpath = self.get_source(name)
+        source = self.get_source(name)
+        filename = self.get_filename(name)
         (fd, fn, info), path = self._cache[name]
+
+        if self.is_package(name):
+            newpath = [fn]
+        else:
+            newpath = None
 
         if source is None:
             return imp.load_module(name, fd, fn, info)
@@ -300,22 +306,17 @@ class AssertImportHook(object):
         except KeyError:
             raise ImportError(name)
 
-        code = filename = newpath = None
+        code = None
         if info[2] == imp.PY_SOURCE:
-            filename = fn
             with fd:
                 code = fd.read()
         elif info[2] == imp.PY_COMPILED:
-            filename = fn[:-1]
-            with open(filename, 'U') as f:
-                code = f.read()
+            code = None
         elif info[2] == imp.PKG_DIRECTORY:
-            filename = os.path.join(fn, '__init__.py')
-            newpath = [fn]
-            with open(filename, 'U') as f:
+            with open(self.get_filename(name), 'U') as f:
                 code = f.read()
 
-        return code, filename, newpath
+        return code
 
     def is_package(self, name):
         try:
