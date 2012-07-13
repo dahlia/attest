@@ -2,6 +2,7 @@ from __future__ import with_statement
 
 import imp
 import inspect
+import marshal
 import os
 import sys
 
@@ -340,3 +341,16 @@ class AssertImportHook(object):
             filename = os.path.join(fn, '__init__.py')
 
         return filename
+
+    def get_code(self, name):
+        source = self.get_source(name)
+        filename = self.get_filename(name)
+
+        if source:
+            code = compile(source, filename)
+        else:
+            with open(filename, 'rb') as f:
+                f.seek(8)
+                code = marshal.load(f)
+
+        return code
