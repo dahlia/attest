@@ -339,7 +339,7 @@ class AssertImportHook(object):
         filename = self.get_filename(name)
 
         if source:
-            code = compile(source, filename)
+            code = compile(source, filename, 'exec')
         else:
             with open(filename, 'rb') as f:
                 f.seek(8)
