@@ -38,5 +38,9 @@ def initpy_with_relative_import():
 @suite.test
 def get_code():
     loader = AssertImportHook()
+    loader.find_module('sys')
+    assert loader.get_code('sys') is None
+    loader.find_module('cStringIO')
+    assert loader.get_code('cStringIO') is None
     loader.find_module('StringIO')
     assert isinstance(loader.get_code('StringIO'), types.CodeType)

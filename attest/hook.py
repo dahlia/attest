@@ -338,6 +338,10 @@ class AssertImportHook(object):
         source = self.get_source(name)
         filename = self.get_filename(name)
 
+        if filename is None:
+            # when it's builtin or extension
+            return None
+
         if source:
             code = compile(source, filename, 'exec')
         else:
